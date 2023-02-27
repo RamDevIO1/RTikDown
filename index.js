@@ -54,7 +54,7 @@ app.get('/down/', async (req, res) => {
       let id = 'RTik_'+str
       const path = process.cwd() + `/temp/media/${type}/${id}.mp4`;
       
-      https.get(rtik.video.noWatermark, (response) => {
+      const requ = https.get(rtik.video.noWatermark, (response) => {
         const file = fs.createWriteStream(path);
         response.pipe(file);
         file.on("error", function(err) {
@@ -68,7 +68,9 @@ app.get('/down/', async (req, res) => {
           console.log("done");
         });
       });
-      
+      requ.on("err", (error) => {
+        console.log("error", error);
+      });
     } else if (type == "mp3") {
       let rid = strRandom(5);
       let id = 'RTik_' + rid
