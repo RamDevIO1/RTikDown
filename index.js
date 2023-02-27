@@ -91,8 +91,35 @@ res.status(200)
 app.get('/down/:type/:id', (req, res) => {
   let type = req.params.type;
   let id = req.params.id;
-  const path = process.cwd() + `/temp/media/${type}/${id}`;
-  res.download(path, { root: __dirname });
+  
+  if (type == 'mp4') {
+    let path = `./temp/media/${type}`;
+    try {
+      fs.readdirSync(path).forEach(v => {
+        if (v == `${id}`) {
+          res.download(`teml/media/${type}/${id}`, {
+            root: __dirname
+          });
+        }
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  } else if (type == 'mp3') {
+    let path = `./temp/media/${type}`;
+    try {
+      fs.readdirSync(path).forEach(v => {
+        if (v == `${id}`) {
+          res.download(`temp/media/${type}/${id}`, {
+            root: __dirname
+          });
+        }
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
 })
 
 
