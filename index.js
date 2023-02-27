@@ -19,7 +19,7 @@ function RTikDown(url) {
 
 app.set('json spaces', 4);
 app.use(express.json());
-app.set('views', __dirname + '/views');
+app.set('views', __dirname + '/public');
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
@@ -28,17 +28,17 @@ app.get('/', async (req, res) => {
     res.render('pages/index');
 });
 
-app.get('/download/:url', async (req, res) => {
+app.get('/download/', async (req, res) => {
   let url = req.query.url;
-  const rtik = await tiklydown(url);
+  const rtik = await RTikDown(url);
   
-  res.render('pages/download', { rtik, url })
+  res.render('pages/download', { rtik: rtik, url: url })
 })
 
-app.get('/download/:url/:type/', async (req, res) => {
+app.get('/down/', async (req, res) => {
     let url = req.params.url;
     let type = req.params.type;
-    const rtik = await tiklydown(url);
+    const rtik = await RTikDown(url);
     function strRandom(length) {
     var result = '';
     var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -90,9 +90,7 @@ app.get('/download/:url/:type/', async (req, res) => {
     }
 });
 
-app.get('*', async (req, res) => {
-    res.redirect('/');
-});
+
 
 app.listen(3000 || process.env.PORT, () => {
     console.log(`[SYS] RTikDown is Running..!`);
