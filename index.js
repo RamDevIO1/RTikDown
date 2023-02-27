@@ -19,6 +19,7 @@ function RTikDown(url) {
 
 app.set('json spaces', 4);
 app.use(express.json());
+
 app.set('views', __dirname + '/public');
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
@@ -56,12 +57,14 @@ app.get('/download/', async (req, res) => {
       file.on("finish", function() {
         file.close();
         console.log("done");
+        
         res.redirect(`/down/mp4/${id}.mp4`);
       });
     });
     requ.on("err", (error) => {
       console.log("error", error);
     });
+    
   } else if (type == "mp3") {
     let rid = strRandom(5);
     let id = 'RTik_' + rid
@@ -81,25 +84,19 @@ app.get('/download/', async (req, res) => {
       });
     });
   }
+
+res.status(200)
   res.render('pages/download', { rtik: rtik, url: url })
 })
-
 app.get('/down/:type/:id', (req, res) => {
   let type = req.params.type;
   let id = req.params.id;
-  const path = process.cwd() + `temp/media/${type}/${id}`;
-  
-  fs.readdirSync(path).forEach(v => {
-    if (v == `${id}`) {
-      res.download(path, {
-        root: __dirname
-      });
-    }
-  });
+  const path = process.cwd() + `/temp/media/${type}/${id}`;
+  res.download(path, { root: __dirname });
 })
 
 
 
-app.listen(3000 || process.env.PORT, () => {
+app.listen(4560 || process.env.PORT, () => {
     console.log(`[SYS] RTikDown is Running..!`);
 });
