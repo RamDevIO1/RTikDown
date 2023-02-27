@@ -1,0 +1,16 @@
+<div class="bg">
+  <p class="title"><i class="bi bi-tiktok"></i> Tiktok Downloader</p>
+  <div class="box">
+    <img src="<%= rtik.video.cover %>" class="img-thumbnail" alt="...">
+    <div class="cbody">
+    <div class="card-body">
+      <h5 class="card-title"><%= rtik.title %></h5>
+      <p class="card-text">Durasi: <%= rtik.video.durationFormatted %></p>
+      <button class="button" onclick="window.location.href = '/download/<%= url =%>/mp4/';">Download Video (MP4)</button>
+      <button class="button" onclick="window.location.href = '/download/<%= url =%>/mp3/';">Download Audio (MP3)</button>
+    </div>
+    </div>
+  </div>
+</div>
+<script src="/lib/bootstrap.min.js"></script>
+<script src="/js/index.download.js"></script>
