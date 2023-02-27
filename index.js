@@ -39,6 +39,7 @@ app.get('/down/', async (req, res) => {
     let url = req.params.url;
     let type = req.params.type;
     const rtik = await RTikDown(url);
+    console.log(rtik)/*
     function strRandom(length) {
     var result = '';
     var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -89,7 +90,7 @@ app.get('/down/', async (req, res) => {
           console.log("done");
         });
       });
-    }
+    }*/
 });
 
 
