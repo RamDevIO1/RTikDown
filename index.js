@@ -30,17 +30,9 @@ app.get('/', async (req, res) => {
 
 app.get('/download/', async (req, res) => {
   let url = req.query.url;
+  let type = req.query.type;
   const rtik = await RTikDown(url);
-  
-  res.render('pages/download', { rtik: rtik, url: url })
-})
-
-app.get('/down/:type/:url/', async (req, res) => {
-    let url = req.params.url;
-    let type = req.params.type;
-    const rtik = await RTikDown(url);
-    
-    function strRandom(length) {
+  function strRandom(length) {
     var result = '';
     var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     var charactersLength = characters.length;
@@ -48,50 +40,63 @@ app.get('/down/:type/:url/', async (req, res) => {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     return result;
-    }
+  }
+  
+  if (type == "mp4") {
+    let str = strRandom(5);
+    let id = 'RTik_' + str
+    const path = process.cwd() + `/temp/media/${type}/${id}.mp4`;
+  
+    const requ = https.get(rtik.video.noWatermark, (response) => {
+      const file = fs.createWriteStream(path);
+      response.pipe(file);
+      file.on("error", function(err) {
+        console.log("err", err);
+      });
+      file.on("finish", function() {
+        file.close();
+        console.log("done");
+        res.redirect(`/down/mp4/${id}.mp4`);
+      });
+    });
+    requ.on("err", (error) => {
+      console.log("error", error);
+    });
+  } else if (type == "mp3") {
+    let rid = strRandom(5);
+    let id = 'RTik_' + rid
+    const path = process.cwd() + `/temp/media/${type}/${id}.mp3`;
+    https.get(rtik.music.play_url, (response) => {
+      const file = fs.createWriteStream(path);
+      response.pipe(file);
+      file.on("error", function(err) {
+        console.log("err", err);
+      });
+      file.on("finish", function() {
+        file.close();
+        res.download(path, {
+          root: __dirname
+        });
+        console.log("done");
+      });
+    });
+  }
+  res.render('pages/download', { rtik: rtik, url: url })
+})
 
-    if (type == "mp4") {
-      let str = strRandom(5);
-      let id = 'RTik_'+str
-      const path = process.cwd() + `/temp/media/${type}/${id}.mp4`;
-      
-      const requ = https.get(rtik.video.noWatermark, (response) => {
-        const file = fs.createWriteStream(path);
-        response.pipe(file);
-        file.on("error", function(err) {
-          console.log("err", err);
-        });
-        file.on("finish", function() {
-          file.close();
-          res.download(path, {
-            root: __dirname
-          });
-          console.log("done");
-        });
-      });
-      requ.on("err", (error) => {
-        console.log("error", error);
-      });
-    } else if (type == "mp3") {
-      let rid = strRandom(5);
-      let id = 'RTik_' + rid
-      const path = process.cwd() + `/temp/media/${type}/${id}.mp3`;
-      https.get(rtik.music.play_url, (response) => {
-        const file = fs.createWriteStream(path);
-        response.pipe(file);
-        file.on("error", function(err) {
-          console.log("err", err);
-        });
-        file.on("finish", function() {
-          file.close();
-          res.download(path, {
-            root: __dirname
-          });
-          console.log("done");
-        });
+app.get('/down/:type/:id', (req, res) => {
+  let type = req.params.type;
+  let id = req.params.id;
+  const path = process.cwd() + `temp/media/${type}/${id}`;
+  
+  fs.readdirSync(path).forEach(v => {
+    if (v == `${id}`) {
+      res.download(path, {
+        root: __dirname
       });
     }
-});
+  });
+})
 
 
 
