@@ -57,7 +57,7 @@ app.get('/download/', async (req, res) => {
       file.on("finish", function() {
         file.close();
         console.log("done");
-        
+        res.status(200)
         res.redirect(`/down/mp4/${id}.mp4`);
       });
     });
@@ -69,7 +69,7 @@ app.get('/download/', async (req, res) => {
     
   }
 
-res.status(200)
+
   res.render('pages/download', { rtik: rtik, url: url })
 })
 app.get('/down/:type/:id', (req, res) => {
