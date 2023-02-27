@@ -45,7 +45,7 @@ app.get('/download/', async (req, res) => {
   
   if (type == "mp4") {
     let str = strRandom(5);
-    let id = 'RTik_' + str
+    let id = 'RTik_' + str + '-' + rtik.id
     const path = process.cwd() + `/temp/media/${type}/${id}.mp4`;
   
     const requ = https.get(rtik.video.noWatermark, (response) => {
@@ -66,23 +66,7 @@ app.get('/download/', async (req, res) => {
     });
     
   } else if (type == "mp3") {
-    let rid = strRandom(5);
-    let id = 'RTik_' + rid
-    const path = process.cwd() + `/temp/media/${type}/${id}.mp3`;
-    https.get(rtik.music.play_url, (response) => {
-      const file = fs.createWriteStream(path);
-      response.pipe(file);
-      file.on("error", function(err) {
-        console.log("err", err);
-      });
-      file.on("finish", function() {
-        file.close();
-        res.download(path, {
-          root: __dirname
-        });
-        console.log("done");
-      });
-    });
+    
   }
 
 res.status(200)
@@ -97,7 +81,7 @@ app.get('/down/:type/:id', (req, res) => {
     try {
       fs.readdirSync(path).forEach(v => {
         if (v == `${id}`) {
-          res.download(`teml/media/${type}/${id}`, {
+          res.download(`temp/media/${type}/${id}`, {
             root: __dirname
           });
         }
