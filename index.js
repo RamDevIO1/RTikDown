@@ -17,6 +17,11 @@ function RTikDown(url) {
   })
 }
 
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+  
 app.set('json spaces', 4);
 app.use(express.json());
 
@@ -57,7 +62,7 @@ app.get('/down/', async (req, res) => {
         file.close();
         console.log("done");
         res.status(200)
-        sleep(4000).then(() => {
+        sleep(000).then(() => {
           try {
             res.download(path, { root: __dirname });
           } catch (error) {
