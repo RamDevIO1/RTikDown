@@ -62,12 +62,8 @@ app.get('/down/', async (req, res) => {
         file.close();
         console.log("done");
         res.status(200)
-        sleep(000).then(() => {
-          try {
-            res.download(path, { root: __dirname });
-          } catch (error) {
-            console.error(error);
-          }
+        sleep(5000).then(() => {
+        res.redirect(`/downs/mp4/${id}.mp4`);
         });
       });
     });
@@ -95,36 +91,23 @@ async function savemp4(rtik_data, res, req) {
 }
 
 
-app.get('/down/:type/:id', (req, res) => {
+app.get('/downs/:type/:id', (req, res) => {
   let type = req.params.type;
   let id = req.params.id;
-  
-  if (type == 'mp4') {
-    let path = `./temp/media/${type}`;
-    try {
-      fs.readdirSync(path).forEach(v => {
-        if (v == `${id}`) {
-          
+  let path = `./temp/media/${type}`;
+  try {
+    fs.readdirSync(path).forEach(v => {
+      if (v == `${id}`) {
+        try {
+          res.download(`${path}/${id}`, { root: __dirname });
+        } catch (error) {
+          console.error(error);
         }
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  } else if (type == 'mp3') {
-    let path = `./temp/media/${type}`;
-    try {
-      fs.readdirSync(path).forEach(v => {
-        if (v == `${id}`) {
-          res.download(`temp/media/${type}/${id}`, {
-            root: __dirname
-          });
-        }
-      });
-    } catch (err) {
-      console.log(err);
-    }
+      }
+    });
+  } catch (err) {
+    console.log(err);
   }
-
 })
 
 
