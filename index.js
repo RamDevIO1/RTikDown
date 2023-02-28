@@ -38,18 +38,20 @@ app.get('/download/', async (req, res) => {
   let url = req.query.url;
   let type = req.query.type;
   const rtik = await RTikDown(url);
+  let str = strRandom(7);
+  let id = 'RTik_' + str 
   
-  res.render('pages/download', { rtik: rtik, url: url })
+  res.render('pages/download', { rtik: rtik, url: url, id: id })
 })
 
 
 app.get('/down/', async (req, res) => {
   let url = req.query.url;
   let type = req.query.type;
+  let id = req.query.id
   const rtik = await RTikDown(url);
   if (type == "mp4") {
-    let str = strRandom(5);
-    let id = 'RTik_' + str + '-' + rtik.id
+    
     const path = process.cwd() + `/temp/media/${type}/${id}.mp4`;
     
     const requ = https.get(rtik.video.noWatermark, (response) => {
@@ -63,7 +65,20 @@ app.get('/down/', async (req, res) => {
         console.log("done");
         res.status(200)
         sleep(5000).then(() => {
-        res.redirect(`/downs/mp4/${id}.mp4`);
+          try {
+            fs.readdirSync(`./temp/media/${type}`).forEach(v => {
+              if (v == `${id}`) {
+                try {
+                  res.download(`./temp/media/${type}/${id}`, { root: __dirname });
+                } catch (error) {
+                  console.error(error);
+                }
+              }
+            });
+          } catch (err) {
+            console.log(err);
+          }
+        //res.redirect(`/downs/mp4/${id}.mp4`);
         });
       });
     });
