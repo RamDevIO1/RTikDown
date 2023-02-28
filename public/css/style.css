@@ -25,9 +25,42 @@ html, body {
 }
 
 .inp-button:hover,
-button:hover {
+.button:hover {
   transform: translateY(-2px) !important;
 }
+
+.btn-primarys {
+  color: var(--primary);
+  background-color: var(--primary)!important;
+}
+
+.buttons {
+  background-color: var(--primary);
+  border: none;
+  padding: 0 15px 0 15px;
+  border-radius: 5px;
+  color: white;
+  font-size: 16px;
+}
+
+.buttons:hover {
+}
+
+textarea:focus,
+textarea.form-control:focus,
+input.form-control:focus,
+input[type=text]:focus,
+input[type=password]:focus,
+input[type=email]:focus,
+input[type=number]:focus,
+[type=text].form-control:focus,
+[type=password].form-control:focus,
+[type=email].form-control:focus,
+[type=tel].form-control:focus,
+[contenteditable].form-control:focus {
+  box-shadow: none;
+}
+
 
 .description {
   margin: 30px 10px 80px 10px;
@@ -73,9 +106,8 @@ button:hover {
 }
 
 .form .inp-input {
-  width: 100%;
   padding: 8px 10px;
-  background-color: #E9E9E9;
+  background-color: #F1F1F1;
   border: none;
   outline: none;
   border-radius: 5px;
