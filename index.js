@@ -64,8 +64,8 @@ app.get('/down/', async (req, res) => {
         file.close();
         console.log("done");
         res.status(200)
-        sleep(5000).then(() => {
-          try {
+        sleep(4000).then(() => {
+          /*try {
             fs.readdirSync(`./temp/media/${type}`).forEach(v => {
               if (v == `${id}`) {
                 try {
@@ -77,8 +77,8 @@ app.get('/down/', async (req, res) => {
             });
           } catch (err) {
             console.log(err);
-          }
-        //res.redirect(`/downs/mp4/${id}.mp4`);
+          }*/
+        res.redirect(`/downs/mp4/${id}.mp4`);
         });
       });
     });
