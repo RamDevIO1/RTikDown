@@ -21,6 +21,18 @@ function RTikDown(url) {
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+function strRandom(length) {
+  var result = '';
+  var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
+
   
 app.set('json spaces', 4);
 app.use(express.json());
@@ -38,9 +50,8 @@ app.get('/download/', async (req, res) => {
   let url = req.query.url;
   let type = req.query.type;
   const rtik = await RTikDown(url);
-  let str = strRandom(7);
-  let id = 'RTik_' + str 
-  
+  let str = strRandom(8);
+  let id = 'RTik-' + str 
   res.render('pages/download', { rtik: rtik, url: url, id: id })
 })
 
@@ -51,9 +62,7 @@ app.get('/down/', async (req, res) => {
   let id = req.query.id
   const rtik = await RTikDown(url);
   if (type == "mp4") {
-    
     const path = process.cwd() + `/temp/media/${type}/${id}.mp4`;
-    
     const requ = https.get(rtik.video.noWatermark, (response) => {
       const file = fs.createWriteStream(path);
       response.pipe(file);
@@ -62,51 +71,41 @@ app.get('/down/', async (req, res) => {
       });
       file.on("finish", function() {
         file.close();
-        console.log("done");
         res.status(200)
-        sleep(4000).then(() => {
-          /*try {
-            fs.readdirSync(`./temp/media/${type}`).forEach(v => {
-              if (v == `${id}`) {
-                try {
-                  res.download(`./temp/media/${type}/${id}`, { root: __dirname });
-                } catch (error) {
-                  console.error(error);
-                }
-              }
-            });
-          } catch (err) {
-            console.log(err);
-          }*/
-        res.redirect(`/downs/mp4/${id}.mp4`);
-        });
+        res.redirect(`/rdown/mp4/${id}.mp4`);
       });
     });
     requ.on("err", (error) => {
       console.log("error", error);
     });
   } else if (type == "mp3") {
-  
+    const path = process.cwd() + `/temp/media/${type}/${id}.mp4`;
+    const requ = https.get(rtik.music.play_url, (response) => {
+      const file = fs.createWriteStream(path);
+      response.pipe(file);
+      file.on("error", function(err) {
+        console.log("err", err);
+      });
+      file.on("finish", function() {
+        file.close();
+        res.status(200)
+        res.redirect(`/rdown/mp3/${id}.mp3`);
+      });
+    });
+    requ.on("err", (error) => {
+      console.log("error", error);
+    });
   }
 })
 
 
-function strRandom(length) {
-  var result = '';
-  var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  var charactersLength = characters.length;
-  for (var i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return result;
-}
 
 async function savemp4(rtik_data, res, req) {
   
 }
 
 
-app.get('/downs/:type/:id', (req, res) => {
+app.get('/rdown/:type/:id', (req, res) => {
   let type = req.params.type;
   let id = req.params.id;
   let path = `./temp/media/${type}`;
