@@ -34,15 +34,46 @@ app.get('/download/', async (req, res) => {
   let type = req.query.type;
   const rtik = await RTikDown(url);
   
-  if (type == "mp4") {
-    savemp4(rtik, res, req);
-  } else if (type == "mp3") {
-    
-  }
-
-
   res.render('pages/download', { rtik: rtik, url: url })
 })
+
+
+app.get('/down/', async (req, res) => {
+  let url = req.query.url;
+  let type = req.query.type;
+  const rtik = await RTikDown(url);
+  if (type == "mp4") {
+    let str = strRandom(5);
+    let id = 'RTik_' + str + '-' + rtik.id
+    const path = process.cwd() + `/temp/media/${type}/${id}.mp4`;
+    
+    const requ = https.get(rtik.video.noWatermark, (response) => {
+      const file = fs.createWriteStream(path);
+      response.pipe(file);
+      file.on("error", function(err) {
+        console.log("err", err);
+      });
+      file.on("finish", function() {
+        file.close();
+        console.log("done");
+        res.status(200)
+        sleep(4000).then(() => {
+          try {
+            res.download(path, { root: __dirname });
+          } catch (error) {
+            console.error(error);
+          }
+        });
+      });
+    });
+    requ.on("err", (error) => {
+      console.log("error", error);
+    });
+  } else if (type == "mp3") {
+  
+  }
+})
+
 
 function strRandom(length) {
   var result = '';
@@ -54,28 +85,8 @@ function strRandom(length) {
   return result;
 }
 
-
 async function savemp4(rtik_data, res, req) {
-  let str = strRandom(5);
-  let id = 'RTik_' + str + '-' + rtik.id
-  const path = process.cwd() + `/temp/media/${type}/${id}.mp4`;
   
-  const requ = https.get(rtik.video.noWatermark, (response) => {
-    const file = fs.createWriteStream(path);
-    response.pipe(file);
-    file.on("error", function(err) {
-      console.log("err", err);
-    });
-    file.on("finish", function() {
-      file.close();
-      console.log("done");
-      res.status(200)
-      res.redirect(`/down/mp4/${id}.mp4`);
-    });
-  });
-  requ.on("err", (error) => {
-    console.log("error", error);
-  });
 }
 
 
@@ -88,9 +99,7 @@ app.get('/down/:type/:id', (req, res) => {
     try {
       fs.readdirSync(path).forEach(v => {
         if (v == `${id}`) {
-          res.download(`temp/media/${type}/${id}`, {
-            root: __dirname
-          });
+          
         }
       });
     } catch (err) {

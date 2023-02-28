@@ -6,12 +6,12 @@
     <div class="card-body">
       <h5 class="card-title"><%= rtik.title %></h5>
       <p class="card-text">Durasi: <%= rtik.video.durationFormatted %></p>
-      <form action="" method="GET">
+      <form action="/down/" method="GET">
         <input type="url" name="url" value="<%= url %>" hidden>
         <input type="text" name="type" value="mp4" hidden>
         <button class="button" type="submit">Download Video (MP4)</button>
       </form>
-      <form action="" method="GET">
+      <form action="/down/" method="GET">
         <input type="text" name="type" value="mp3" hidden>
         <button class="button" type="submit">Download Audio (MP3)</button>
       </form>
