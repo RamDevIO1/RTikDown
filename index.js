@@ -1,9 +1,16 @@
 const express = require('express');
-const axios = require('axios')
-const https = require("https");
-const app = express();
+const axios = require('axios');
 const fs = require('fs');
 const ejs = require('ejs');
+const https = require("https");
+
+
+const app = express();
+const http = require('http');
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+const io = new Server(server);
+
 
 function RTikDown(url) {
   return new Promise((resolve, reject) => {
@@ -41,15 +48,20 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
 
+let data = {
+  url: ''
+}
+
 app.get('/', async (req, res) => {
-    res.render('pages/index');
+  res.render('pages/index');
 });
 
 app.get('/download/', async (req, res) => {
   let url = req.query.url;
   let type = req.query.type;
   const rtik = await RTikDown(url);
-  let id = 'RTik-' + rtik.data.id 
+  let id = 'RTik-' + rtik.data.id
+  console.log(data.url)
   res.render('pages/download', { rtik: rtik, url: url, id: id })
 })
 
@@ -115,8 +127,13 @@ app.get('/rdown/:type/:id', (req, res) => {
   }
 })
 
+io.on('connection', (socket) => {
+  socket.on('down', (datau) => {
+    data.url = datau
+  })
+});
 
 
-app.listen(4560 || process.env.PORT, () => {
+server.listen(4560 || process.env.PORT, () => {
     console.log(`[SYS] RTikDown is Running..!`);
 });
