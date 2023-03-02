@@ -17,7 +17,35 @@ function RTikDown(url) {
   })
 }
 
+async function testtikwm(url){
+let domain = 'https://www.tikwm.com/';
+let res = await axios.post(domain + 'api/', {}, {
+  headers: {
+    'accept': 'application/json, text/javascript, */*; q=0.01',
+    'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+    // 'cookie': 'current_language=en; _ga=GA1.1.115940210.1660795490; _gcl_au=1.1.669324151.1660795490; _ga_5370HT04Z3=GS1.1.1660795489.1.1.1660795513.0.0.0',
+    'sec-ch-ua': '"Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"',
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36'
+  },
+  params: {
+    url: url,
+    
+  }
+})
 
+return {
+  data: res.data,
+  nowm: domain + res.data.data.play,
+  wm: domain + res.data.data.wmplay,
+  music: domain + res.data.data.music,
+}
+}
+async function abcs(){
+  let data = await testtikwm("https://vm.tiktok.com/ZS89TgsEW/")
+  console.log(data)
+
+}
+abcs()
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -49,10 +77,10 @@ app.get('/', async (req, res) => {
 app.get('/download/', async (req, res) => {
   let url = req.query.url;
   let type = req.query.type;
-  const rtik = await RTikDown(url);
+  const rtik_data = await RTikDown(url);
   let str = strRandom(8);
   let id = 'RTik-' + str 
-  res.render('pages/download', { rtik: rtik, url: url, id: id })
+  res.render('pages/download', { rtik: rtik_data, url: url, id: id })
 })
 
 
@@ -79,7 +107,7 @@ app.get('/down/', async (req, res) => {
       console.log("error", error);
     });
   } else if (type == "mp3") {
-    const path = process.cwd() + `/temp/media/${type}/${id}.mp4`;
+    const path = process.cwd() + `/temp/media/${type}/${id}.mp3`;
     const requ = https.get(rtik.music.play_url, (response) => {
       const file = fs.createWriteStream(path);
       response.pipe(file);
