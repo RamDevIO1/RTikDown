@@ -2,18 +2,94 @@
 <html>
 
 <head>
+  
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="apple-touch-icon" sizes="57x57" href="/src/favicon/apple-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="/src/favicon/apple-icon-60x60.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/src/favicon/apple-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/src/favicon/apple-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/src/favicon/apple-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/src/favicon/apple-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/src/favicon/apple-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/src/favicon/apple-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/src/favicon/apple-icon-180x180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/src/favicon/android-icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/src/favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="/src/favicon/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/src/favicon/favicon-16x16.png">
+<link rel="manifest" href="src/favicon//manifest.json">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="msapplication-TileImage" content="/src/favicon/ms-icon-144x144.png">
+<meta name="theme-color" content="#272744">
 <title>RTikDown - TikTok Downloader</title>
 <link rel="stylesheet" href="../lib/bootstrap.min.css">
 <link rel="stylesheet" href="../lib/bootstrap-icons.css">
-<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../lib/aos.css">
+<link rel="stylesheet" href="../css/style.download.css">
+
 </head>
 
 <body>
+
+<nav class="navbar shadow-sm fixed-top navbar-expand-lg navbar-dark bg-nav">
+  <div class="container">
+    <a class="navbar-brand" href="#"><i class="bi bi-tiktok"></i> RTikDown</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav text-light">
+        <li><hr class="dropdown-divider"></li>
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="/">Home</a>
+        </li>
+        <li><hr class="dropdown-divider"></li>
+      </ul>
+    </div>
+  </div>
+</nav>
 <div class="bg">
   <p class="title"><i class="bi bi-tiktok"></i> Tiktok Downloader</p>
-  <div class="box">
+  <div class="box " data-aos="zoom-in">
+    <img src="<%= rtik.video.cover %>" class="img-thumbnail" alt="...">
+    <div class="cbody">
+    <div class="card-body">
+      <hr class="dropdown-divider">
+      <h5 class="card-title text-break"><%= rtik.title %></h5>
+      <p class="card-text ct">Durasi: <%= rtik.video.durationFormatted %></p>
+      <p class="card-text ct2">Resolusi: <%= rtik.video.ratio %></p>
+      <hr class="dropdown-divider">
+      <form action="/down/" method="GET">
+        <input type="url" name="url" value="<%= url %>" hidden>
+        <input type="text" name="type" value="mp4" hidden>
+        <input type="text" name="id" value="<%= id %>" hidden>
+        <button class="button" type="submit"><i class="bi bi-download"></i><span class="ms-2">Download Video (MP4)</span></button>
+      </form>
+      <form action="/down/" method="GET">
+        <input type="url" name="url" value="<%= url %>" hidden>
+        <input type="text" name="type" value="mp3" hidden>
+        <input type="text" name="id" value="<%= id %>" hidden>
+        <button class="button" type="submit"><i class="bi bi-music-note"></i><span class="ms-2">Download Audio (MP3)</span></button>
+      </form>
+      <hr class="dropdown-divider">
+      <button onclick="window.location.href = '/';" class="button"><i class="bi bi-arrow-clockwise"></i><span class="ms-2">Download Other Video</span></button>
+      <hr class="dropdown-divider">
+      <h5>Share Us:</h5>
+      <button type="button" class="buttons" id="share"><i class="bi bi-share-fill"></i><span class="ms-2">Share</span></button>
+    </div>
+    </div>
+  </div>
+</div>
+<div id="snackbar">Some text some message..</div>
+<div class="footer">
+  <p class="foot-text">RTikDown by <a href="#">@RamDev</a></p>
+</div>
+
+<!--
+<div class="bg">
+  <p class="title"><i class="bi bi-tiktok"></i> TikTok Downloader</p>
+  <div class="box" data-aos="zoom-in-down">
     <form class="form" action="/download/" method="GET">
       <div class="inp-group">
         <p class="inp-title">Link:</p>
@@ -22,12 +98,51 @@
         <button type="button" class="buttons btn-primarys" id="paste"><i class="bi bi-clipboard"></i></button>
         </div>
       </div>
-      <input class="inp-button" type="submit" value="Download">
+      <div data-aos-delay="250" data-aos="flip-down">
+        <input class="inp-button" type="submit" value="Download">
+      </div>
     </form>
   </div>
 </div>
+<div class="container-fluid layanan pb-5" id="layanan">
+  <div class="container text-center">
+    <div class="row">
+      <div class="col-md-4" data-aos="zoom-in" >
+        <div data-aos="zoom-out" data-aos-delay="100">
+          <span class="lingkaran"><i class="bi bi-cloud-arrow-down"></i></span>
+        </div>
+        <h4 class="mt-3">Free Downloads!</h4>
+        <p class="">
+        Download Unlimited TikTok Videos Without a Watermark For Free. Download TikTok videos without any Limit!
+        </p>
+      </div>
+      <div class="col-md-4" data-aos="zoom-in" >
+        <div data-aos="zoom-out" data-aos-delay="100">
+          <span class="lingkaran"><i class="bi bi-play-btn"></i></span>
+        </div>
+        <h4 class="mt-3">Videos & Audios</h4>
+        <p class="">
+        Download TikTok Videos in MP4 HD & TikTok MP3 from RTikDown. TikTok Video Download in MP4 & MP3 Format.
+        </p>
+      </div>
+      <div class="col-md-4" data-aos="zoom-in" >
+        <div data-aos="zoom-out" data-aos-delay="100">
+          <span class="lingkaran"><i class="bi bi-cloud-check"></i></i></span>
+        </div>
+        <h4 class="mt-3">Easy Downloads</h4>
+        <p class="">
+          We're the Fastest TikTok Video Downloader. Download TikTok video without Watermark Easily with RTikDown.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+-->
+
+
 <script src="../lib/bootstrap.min.js"></script>
-<script src="../js/index.js"></script>
+<script src="../lib/aos.js"></script>
+<script src="../js/index.download.js"></script>
 </body>
 
 </html>

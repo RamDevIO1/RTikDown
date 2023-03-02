@@ -1,6 +1,36 @@
+<nav class="navbar shadow-sm fixed-top navbar-expand-lg navbar-dark bg-nav">
+  <div class="container">
+    <a class="navbar-brand" href="#"><i class="bi bi-tiktok"></i> RTikDown</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav text-light">
+        <li><hr class="dropdown-divider"></li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="#layanan">Tentang</a>
+        </li>
+        <li class="nav-item dropdown ">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            RDownloader
+          </a>
+          <ul class="dropdown-menu bg-dm dropdown-menu-dark">
+            <li><a class="dropdown-item active" href="#">TikTok Downloader</a></li>
+            <li><a class="dropdown-item disabled" href="#">YouTube Downloader</a></li>
+            <li><a class="dropdown-item disabled" href="#">-----</a></li>
+          </ul>
+        </li>
+        <li><hr class="dropdown-divider"></li>
+      </ul>
+    </div>
+  </div>
+</nav>
 <div class="bg">
-  <p class="title"><i class="bi bi-tiktok"></i> Tiktok Downloader</p>
-  <div class="box">
+  <p class="title"><i class="bi bi-tiktok"></i> TikTok Downloader</p>
+  <div class="box" data-aos="zoom-in-down">
     <form class="form" action="/download/" method="GET">
       <div class="inp-group">
         <p class="inp-title">Link:</p>
@@ -9,9 +39,48 @@
         <button type="button" class="buttons btn-primarys" id="paste"><i class="bi bi-clipboard"></i></button>
         </div>
       </div>
-      <input class="inp-button" type="submit" value="Download">
+      <div data-aos-delay="250" data-aos="flip-down">
+        <input class="inp-button" type="submit" value="Download">
+      </div>
     </form>
   </div>
 </div>
+<div class="container-fluid layanan pb-5" id="layanan">
+  <div class="container text-center">
+    <div class="row">
+      <div class="col-md-4" data-aos="zoom-in" >
+        <div data-aos="zoom-out" data-aos-delay="100">
+          <span class="lingkaran"><i class="bi bi-cloud-arrow-down"></i></span>
+        </div>
+        <h4 class="mt-3">Free Downloads!</h4>
+        <p class="">
+        Download Unlimited TikTok Videos Without a Watermark For Free. Download TikTok videos without any Limit!
+        </p>
+      </div>
+      <div class="col-md-4" data-aos="zoom-in" >
+        <div data-aos="zoom-out" data-aos-delay="100">
+          <span class="lingkaran"><i class="bi bi-play-btn"></i></span>
+        </div>
+        <h4 class="mt-3">Videos & Audios</h4>
+        <p class="">
+        Download TikTok Videos in MP4 HD & TikTok MP3 from RTikDown. TikTok Video Download in MP4 & MP3 Format.
+        </p>
+      </div>
+      <div class="col-md-4" data-aos="zoom-in" >
+        <div data-aos="zoom-out" data-aos-delay="100">
+          <span class="lingkaran"><i class="bi bi-cloud-check"></i></i></span>
+        </div>
+        <h4 class="mt-3">Easy Downloads</h4>
+        <p class="">
+          We're the Fastest TikTok Video Downloader. Download TikTok video without Watermark Easily with RTikDown.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="footer">
+  <p class="foot-text">RTikDown by <a href="#">@RamDev</a></p>
+</div>
 <script src="/lib/bootstrap.min.js"></script>
+<script src="/lib/aos.js"></script>
 <script src="/js/index.js"></script>
