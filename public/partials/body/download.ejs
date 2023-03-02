@@ -18,13 +18,13 @@
 <div class="bg">
   <p class="title"><i class="bi bi-tiktok"></i> Tiktok Downloader</p>
   <div class="box " data-aos="zoom-in">
-    <img src="<%= rtik.video.cover %>" class="img-thumbnail" alt="...">
+    <img src="<%= rtik.data.cover %>" class="img-thumbnail" alt="...">
     <div class="cbody">
     <div class="card-body">
       <hr class="dropdown-divider">
-      <h5 class="card-title text-break"><%= rtik.title %></h5>
-      <p class="card-text ct">Durasi: <%= rtik.video.durationFormatted %></p>
-      <p class="card-text ct2">Resolusi: <%= rtik.video.ratio %></p>
+      <h5 class="card-title text-break"><%= rtik.data.title %></h5>
+      <p class="card-text ct">Durasi: <%= rtik.data.duration %></p>
+      <p class="card-text ct2">Resolusi: <%= rtik.data.size %></p>
       <hr class="dropdown-divider">
       <form action="/down/" method="GET">
         <input type="url" name="url" value="<%= url %>" hidden>
