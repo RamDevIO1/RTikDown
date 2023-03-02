@@ -48,10 +48,9 @@ app.get('/', async (req, res) => {
 app.get('/download/', async (req, res) => {
   let url = req.query.url;
   let type = req.query.type;
-  const rtik_data = await RTikDown(url);
-  let str = strRandom(8);
-  let id = 'RTik-' + str 
-  res.render('pages/download', { rtik: rtik_data, url: url, id: id })
+  const rtik = await RTikDown(url);
+  let id = 'RTik-' + rtik.data.id 
+  res.render('pages/download', { rtik: rtik, url: url, id: id })
 })
 
 
