@@ -2,8 +2,21 @@ const express = require('express')
 const fs = require('fs');
 const https = require("https");
 const { RTikDown } = require('../module')
+const axios = require('axios');
 const rdownRouter = express.Router()
 const rdownRouter2 = express.Router()
+
+function RTikDown(url) {
+  return new Promise((resolve, reject) => {
+    axios.get(`https://www.tikwm.com/api/?url=${url}`)
+      .then(({ data }) => {
+        resolve(data)
+      })
+      .catch(e => {
+        reject(e)
+      })
+  })
+}
 
 rdownRouter.get('/down/', async (req, res) => {
   let url = req.query.url;
