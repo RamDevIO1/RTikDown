@@ -36,7 +36,7 @@ const tasktemp = cron.schedule(
 			file = fs.readdirSync("./temp/media/mp4").map((a) => "./temp/media/mp4/" + a);
 			file.map((a) => {
 			  console.log(a)
-			  fs.unlinkSync(a)
+			  //fs.unlinkSync(a)
 			});
 		} catch (e) {
 			console.log(e);
