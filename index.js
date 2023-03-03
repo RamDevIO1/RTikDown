@@ -97,23 +97,35 @@ app.get('/down/', async (req, res) => {
   let type = req.query.type;
   let id = req.query.id
   const rtik = await RTikDown(url);
+
   if (type == "mp4") {
     const path = process.cwd() + `/temp/media/${type}/${id}.mp4`;
-    const requ = https.get(rtik.data.play, (response) => {
-      const file = fs.createWriteStream(path);
-      response.pipe(file);
-      file.on("error", function(err) {
-        console.log("err", err);
-      });
-      file.on("finish", function() {
-        file.close();
-        res.status(200)
-        res.redirect(`/rdown/mp4/${id}.mp4`);
-      });
+    fs.readdirSync(`./temp/media/${type}`).forEach(v => {
+      if (v == `${id}`) {
+        try {
+          res.download(`${path}`, { root: __dirname });
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        const requ = https.get(rtik.data.play, (response) => {
+          const file = fs.createWriteStream(path);
+          response.pipe(file);
+          file.on("error", function(err) {
+            console.log("err", err);
+          });
+          file.on("finish", function() {
+            file.close();
+            res.status(200)
+            res.redirect(`/rdown/mp4/${id}.mp4`);
+          });
+        });
+        requ.on("err", (error) => {
+          console.log("error", error);
+        });
+      }
     });
-    requ.on("err", (error) => {
-      console.log("error", error);
-    });
+    
   } else if (type == "mp3") {
     const path = process.cwd() + `/temp/media/${type}/${id}.mp3`;
     const requ = https.get(rtik.data.music, (response) => {
@@ -152,6 +164,11 @@ app.get('/rdown/:type/:id', (req, res) => {
     console.log(err);
   }
 })
+
+app.get('*', async (req, res) => {
+    res.redirect('/');
+});
+
 
 io.on('connection', (socket) => {
   socket.on('download', (inpdata) => { rdata.url = inpdata })
