@@ -3,10 +3,12 @@ const axios = require('axios');
 const fs = require('fs');
 const ejs = require('ejs');
 const https = require("https");
-
-const { instrument } = require("@socket.io/admin-ui");
-const app = express();
 const http = require('http');
+const cron = require('node-cron');
+const { instrument } = require("@socket.io/admin-ui");
+
+
+const app = express();
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server, {
@@ -19,6 +21,30 @@ instrument(io, {
   auth: false,
 });
 
+let task = cron.schedule('0 0 0 * * *', () => {
+  console.log('Running a job at 00:00 at Asia/Jakarta timezone');
+}, {
+  scheduled: true,
+  timezone: "Asia/Jakarta"
+});
+task.start()
+const tasktemp = cron.schedule(
+	"*/10 * * * *", // 10 minutes per delete
+	() => {
+		try {
+			console.log("Delete Cache Temp");
+			file = fs.readdirSync("./temp/media/mp4").map((a) => "./temp/media/mp4" + a);
+			file.map((a) => {
+			  console.log(a)
+			  //fs.unlinkSync(a)
+			});
+		} catch (e) {
+			console.log(e);
+		}
+	},
+	{ scheduled: true, timezone: "Asia/Jakarta" }
+);
+tasktemp.start()
 function RTikDown(url) {
   return new Promise((resolve, reject) => {
     axios.get(`https://www.tikwm.com/api/?url=${url}`)
@@ -31,9 +57,7 @@ function RTikDown(url) {
   })
 }
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
+function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
 
 function strRandom(length) {
   var result = '';
@@ -45,8 +69,6 @@ function strRandom(length) {
   return result;
 }
 
-
-  
 app.set('json spaces', 4);
 app.use(express.json());
 
@@ -55,18 +77,7 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
 
-let rdata = {
-  url: '',
-  rtik: null,
-  id: null
-}
-
-async function getrtikdata() {
-  const rtik = await RTikDown(rdata.url);
-  rdata.rtik = rtik
-  let id = 'RTik-' + rtik.data.id
-  rdata.id = id
-}
+let rdata = { url: ''}
 
 app.get('/', async (req, res) => {
   res.render('pages/index');
@@ -74,11 +85,10 @@ app.get('/', async (req, res) => {
 
 app.get('/download/', async (req, res) => {
   //let url = req.query.url;
-  
   const rtik = await RTikDown(rdata.url);
-  
+  let id = 'RTik-' + rtik.data.id
   console.log(rdata.url)
-  res.render('pages/download', { rtik: rdata.rtik, url: rdata.url, id: rdata.id })
+  res.render('pages/download', { rtik: rtik, url: rdata.url, id: id })
 })
 
 
@@ -144,10 +154,7 @@ app.get('/rdown/:type/:id', (req, res) => {
 })
 
 io.on('connection', (socket) => {
-  socket.on('download', (inpdata) => {
-    rdata.url = inpdata
-    getrtikdata()
-  })
+  socket.on('download', (inpdata) => { rdata.url = inpdata })
 });
 
 

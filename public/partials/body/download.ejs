@@ -23,8 +23,7 @@
     <div class="card-body">
       <hr class="dropdown-divider">
       <h5 class="card-title text-break"><%= rtik.data.title %></h5>
-      <p class="card-text ct">Durasi: <%= rtik.data.duration %></p>
-      <p class="card-text ct2">Resolusi: <%= rtik.data.size %></p>
+      <p class="card-text ct"><%= rtik.data.author.nickname %> (<%= rtik.data.author.unique_id %>)</p>
       <hr class="dropdown-divider">
       <form action="/down/" method="GET">
         <input type="url" name="url" value="<%= url %>" hidden>
