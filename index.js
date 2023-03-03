@@ -4,13 +4,20 @@ const fs = require('fs');
 const ejs = require('ejs');
 const https = require("https");
 
-
+const { instrument } = require("@socket.io/admin-ui");
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
-const io = new Server(server);
-
+const io = new Server(server, {
+  cors: {
+    origin: ["https://admin.socket.io"],
+    credentials: true
+  }
+});
+instrument(io, {
+  auth: false,
+});
 
 function RTikDown(url) {
   return new Promise((resolve, reject) => {
@@ -49,7 +56,16 @@ app.use(express.static('public'));
 
 
 let rdata = {
-  url: ''
+  url: '',
+  rtik: null,
+  id: null
+}
+
+function getrtikdata() {
+  const rtik = await RTikDown(rdata.url);
+  rdata.rtik = rtik
+  let id = 'RTik-' + rtik.data.id
+  rdata.id = id
 }
 
 app.get('/', async (req, res) => {
@@ -59,10 +75,10 @@ app.get('/', async (req, res) => {
 app.get('/download/', async (req, res) => {
   //let url = req.query.url;
   
-  const rtik = await RTikDown(rdata.url);
-  let id = 'RTik-' + rtik.data.id
+  //const rtik = await RTikDown(rdata.url);
+  
   console.log(rdata.url)
-  res.render('pages/download', { rtik: rtik, url: rdata.url, id: id })
+  res.render('pages/download', { rtik: rdata.rtik, url: rdata.url, id: rdata.id })
 })
 
 
@@ -128,14 +144,10 @@ app.get('/rdown/:type/:id', (req, res) => {
 })
 
 io.on('connection', (socket) => {
-  socket.on('down', (datau) => {
-    rdata.url = datau
+  socket.on('download', (inpdata) => {
+    rdata.url = inpdata
+    getrtikdata()
   })
-
-  socket.on('downvid', (dodata)=> {
-    
-  })
-        
 });
 
 
