@@ -66,6 +66,6 @@ rdownRouter2.get('/rdown/:type/:id', (req, res) => {
 })
 
 module.exports = {
-  router,
-  router2
+  rdownRouter,
+  rdownRouter2
 }
