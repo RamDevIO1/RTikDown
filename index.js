@@ -103,7 +103,8 @@ app.get('/down/', async (req, res) => {
     fs.readdirSync(`./temp/media/${type}`).forEach(v => {
       if (v == `${id}`) {
         try {
-          res.download(`${path}`, { root: __dirname });
+          res.status(200)
+           res.redirect(`/rdown/mp4/${id}.mp4`);
         } catch (error) {
           console.error(error);
         }
