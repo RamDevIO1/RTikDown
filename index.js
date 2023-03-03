@@ -29,14 +29,14 @@ let task = cron.schedule('0 0 0 * * *', () => {
 });
 task.start()
 const tasktemp = cron.schedule(
-	"*/10 * * * *", // 10 minutes per delete
+	"*/15 * * * *", // 10 minutes per delete
 	() => {
 		try {
 			console.log("Delete Cache Temp");
-			file = fs.readdirSync("./temp/media/mp4").map((a) => "./temp/media/mp4" + a);
+			file = fs.readdirSync("./temp/media/mp4").map((a) => "./temp/media/mp4/" + a);
 			file.map((a) => {
 			  console.log(a)
-			  //fs.unlinkSync(a)
+			  fs.unlinkSync(a)
 			});
 		} catch (e) {
 			console.log(e);
