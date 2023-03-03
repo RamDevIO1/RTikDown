@@ -48,7 +48,7 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
 
-let data = {
+let rdata = {
   url: ''
 }
 
@@ -57,12 +57,12 @@ app.get('/', async (req, res) => {
 });
 
 app.get('/download/', async (req, res) => {
-  let url = req.query.url;
-  let type = req.query.type;
-  const rtik = await RTikDown(url);
+  //let url = req.query.url;
+  
+  const rtik = await RTikDown(rdata.url);
   let id = 'RTik-' + rtik.data.id
-  console.log(data.url)
-  res.render('pages/download', { rtik: rtik, url: url, id: id })
+  console.log(rdata.url)
+  res.render('pages/download', { rtik: rtik, url: rdata.url, id: id })
 })
 
 
@@ -129,8 +129,13 @@ app.get('/rdown/:type/:id', (req, res) => {
 
 io.on('connection', (socket) => {
   socket.on('down', (datau) => {
-    data.url = datau
+    rdata.url = datau
   })
+
+  socket.on('downvid', (dodata)=> {
+    
+  })
+        
 });
 
 
