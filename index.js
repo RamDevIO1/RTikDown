@@ -61,7 +61,7 @@ let rdata = {
   id: null
 }
 
-function getrtikdata() {
+async function getrtikdata() {
   const rtik = await RTikDown(rdata.url);
   rdata.rtik = rtik
   let id = 'RTik-' + rtik.data.id
@@ -75,7 +75,7 @@ app.get('/', async (req, res) => {
 app.get('/download/', async (req, res) => {
   //let url = req.query.url;
   
-  //const rtik = await RTikDown(rdata.url);
+  const rtik = await RTikDown(rdata.url);
   
   console.log(rdata.url)
   res.render('pages/download', { rtik: rdata.rtik, url: rdata.url, id: rdata.id })

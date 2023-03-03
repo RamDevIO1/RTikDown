@@ -10,6 +10,7 @@ btn_paste.addEventListener('click', () => {
 
 btndown.addEventListener('click', () => {
   socket.emit('download', input.value)
+  window.location.href = '/download';
 })
 
 AOS.init()
