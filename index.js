@@ -7,6 +7,14 @@ const axios = require('axios');
 const cron = require('node-cron');
 const { instrument } = require("@socket.io/admin-ui");
 
+
+const session     = require('express-session');
+const passport    = require("passport");
+const MemoryStore = require(`memorystore`)(session);
+const bodyParser  = require("body-parser");
+
+
+
 const app = express();
 const server = http.createServer(app);
 const { Server } = require("socket.io");
@@ -82,25 +90,41 @@ app.use(express.urlencoded({ extended: true }));
 app.set('views', __dirname + '/public');
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
+
+passport.serializeUser((user, done) => done(null, user));
+passport.deserializeUser((obj, done) => done(null, obj));
+
+
+app.use(session({
+  secret: 'rtikdown-project',
+  resave: true,
+  saveUninitialized: true,
+  store: new MemoryStore({ checkPeriod: 86400000 }),
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+
 app.get('/', async (req, res) => {
   res.render('pages/index');
 });
 io.on('connection', (socket) => {
   socket.on('download', async (inpdata) => {
-    
     rdata.url = inpdata
     let rtdata = await RTikDown(inpdata)
     rtikdata = rtdata
-    io.sockets.emit ('messageSuccess', inpdata);
-
+    io.sockets.emit('messageSuccess', inpdata);
   })
 });
 
 app.get('/download/', async (req, res) => {
   const rtik = rtikdata
   let id = 'RTik-'
-  console.log(`Starting download: \nurl: ${rdata.url}\nid: ${id}`)
-  
+  console.log(`Starting download: \nURL: ${rdata.url}`)
   res.render('pages/download', { rtik: rtik, url: rdata.url, id: id })
 })
 
