@@ -87,15 +87,15 @@ app.get('/', async (req, res) => {
 });
 app.get('/download/', async (req, res) => {
   const rtik = await RTikDown(rdata.url);
-  let id = 'RTik-' + rtik.data.id
+  let id = 'RTik-'
   console.log(`Starting download: \nurl: ${rdata.url}\nid: ${id}`)
   res.render('pages/download', { rtik: rtik, url: rdata.url, id: id })
 })
 app.get('/down/', async (req, res) => {
   let url = req.query.url;
   let type = req.query.type;
-  let id = req.query.id
-  const rtik = await RTikDown(url);
+  const rtik = await RTikDown(rdata.url);
+  let id = 'RTik-' + rtik.data.id
   if (type == "mp4") {
     const path = process.cwd() + `/temp/media/${type}/${id}.mp4`;
     const requ = https.get(rtik.data.play, (response) => {
