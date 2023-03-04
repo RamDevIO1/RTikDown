@@ -20,11 +20,11 @@ instrument(io, {
   auth: false,
 });
 let rdata = { url: ''}
+let rtikdata
 
-
-function RTikDown(url) {
-  return new Promise((resolve, reject) => {
-    axios.get(`https://www.tikwm.com/api/?url=${url}`)
+async function RTikDown(url) {
+  return new Promise(async (resolve, reject) => {
+   await axios.get(`https://www.tikwm.com/api/?url=${url}`)
       .then(({ data }) => {
         resolve(data)
       })
@@ -42,7 +42,7 @@ let taskmidnight = cron.schedule('0 0 0 * * *', () => {
 });
 
 const tasktemp = cron.schedule(
-	"*/60 * * * *", // 10 minutes per delete
+	"*/60 * * * *", // 60 minutes per delete
 	() => {
 		try {
 			console.log("Delete Cache Temp");
@@ -85,16 +85,29 @@ app.use(express.static('public'));
 app.get('/', async (req, res) => {
   res.render('pages/index');
 });
+io.on('connection', (socket) => {
+  socket.on('download', async (inpdata) => {
+    
+    rdata.url = inpdata
+    let rtdata = await RTikDown(inpdata)
+    rtikdata = rtdata
+    io.sockets.emit ('messageSuccess', inpdata);
+
+  })
+});
+
 app.get('/download/', async (req, res) => {
-  const rtik = await RTikDown(rdata.url);
+  const rtik = rtikdata
   let id = 'RTik-'
   console.log(`Starting download: \nurl: ${rdata.url}\nid: ${id}`)
+  
   res.render('pages/download', { rtik: rtik, url: rdata.url, id: id })
 })
+
 app.get('/down/', async (req, res) => {
   let url = req.query.url;
   let type = req.query.type;
-  const rtik = await RTikDown(rdata.url);
+  const rtik = rtikdata
   let id = 'RTik-' + rtik.data.id
   if (type == "mp4") {
     const path = process.cwd() + `/temp/media/${type}/${id}.mp4`;
@@ -155,9 +168,6 @@ app.get('*', async (req, res) => {
     res.redirect('/');
 });
 
-io.on('connection', (socket) => {
-  socket.on('download', (inpdata) => { rdata.url = inpdata })
-});
 
 server.listen(4560 || process.env.PORT, () => {
     console.log(`[SYS] RTikDown is Running..!`);

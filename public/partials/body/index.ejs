@@ -31,7 +31,7 @@
 <div class="bg">
   <p class="title"><i class="bi bi-tiktok"></i> TikTok Downloader</p>
   <div class="box" data-aos="zoom-in-down">
-    <form class="form"> <!-- action="/download/" method="GET" -->
+    <form class="form" onsubmit="return test()" method="dialog"> <!-- action="/download/" method="GET" -->
       <div class="inp-group">
         <p class="inp-title">Link:</p>
         <div class="input-group">
@@ -40,7 +40,7 @@
         </div>
       </div>
       <div data-aos-delay="250" data-aos="flip-down">
-        <input class="inp-button" type="button" id="btndown" value="Download">
+        <input class="inp-button" type="submit" id="btndown" value="Download">
       </div>
     </form>
   </div>
