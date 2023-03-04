@@ -5,15 +5,8 @@ const http = require('http');
 const https = require("https");
 const axios = require('axios');
 const cron = require('node-cron');
-const { instrument } = require("@socket.io/admin-ui");
-
-
-const session     = require('express-session');
-const passport    = require("passport");
-const MemoryStore = require(`memorystore`)(session);
 const bodyParser  = require("body-parser");
-
-
+const { instrument } = require("@socket.io/admin-ui");
 
 const app = express();
 const server = http.createServer(app);
@@ -80,40 +73,8 @@ const tasktemp = cron.schedule(
 	{ scheduled: true, timezone: "Asia/Jakarta" }
 );
 
-
 taskmidnight.start()
 tasktemp.start()
-
-//passport.serializeUser((user, done) => done(null, user));
-//passport.deserializeUser((obj, done) => done(null, obj));
-
-app.configure(function() {
-  app.use(express.favicon());
-  app.use(express.logger('dev'));
-  // The following two middlwares are NOT necessary because bodyParser includes them.
-  // app.use(express.json());
-  // app.use(express.urlencoded());
-  app.use(express.methodOverride());
-
-  app.use(express.cookieParser()); // read cookies (needed for auth)
-  app.use(express.bodyParser()); // get information from html forms
-  app.use(bodyParser.json());
-  app.use(bodyParser.urlencoded({ extended: true }));
-
-  // required for passport
-  app.use(session({
-  secret: 'rtikdown-project',
-  resave: true,
-  saveUninitialized: true,
-  store: new MemoryStore({ checkPeriod: 86400000 }),
-  }));
-  app.use(passport.initialize());
-  app.use(passport.session()); // persistent login sessions
-  app.use(flash()); // use connect-flash for flash messages stored in session
-
-  app.use(app.router);
-  app.use(require('stylus').middleware(path.join(__dirname, 'public')));
-});
 
 //app.set('json spaces', 4);
 //app.use(express.json());
@@ -121,11 +82,13 @@ app.configure(function() {
 app.set('views', __dirname + '/public');
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
-
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', async (req, res) => {
   res.render('pages/index');
 });
+
 io.on('connection', (socket) => {
   socket.on('download', async (inpdata) => {
     rdata.url = inpdata
@@ -136,16 +99,17 @@ io.on('connection', (socket) => {
 });
 
 app.get('/download/', async (req, res) => {
-  const rtik = rtikdata
+  let url = req.query.url;
+  const rtik = await RTikDown(url)
   let id = 'RTik-'
-  console.log(`Starting download: \nURL: ${rdata.url}`)
-  res.render('pages/download', { rtik: rtik, url: rdata.url, id: id })
+  console.log(`Starting download: \nURL: ${url}`)
+  res.render('pages/download', { rtik: rtik, url: url, id: id })
 })
 
 app.get('/down/', async (req, res) => {
   let url = req.query.url;
   let type = req.query.type;
-  const rtik = rtikdata
+  const rtik = await RTikDown(url)
   let id = 'RTik-' + rtik.data.id
   if (type == "mp4") {
     const path = process.cwd() + `/temp/media/${type}/${id}.mp4`;
