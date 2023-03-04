@@ -2,10 +2,10 @@ const express = require('express');
 const fs = require('fs');
 const ejs = require('ejs');
 const http = require('http');
+const https = require("https");
 const axios = require('axios');
 const cron = require('node-cron');
 const { instrument } = require("@socket.io/admin-ui");
-const { rdownRouter, rdownRouter2 } = require('./router/rdown')
 
 const app = express();
 const server = http.createServer(app);
@@ -88,10 +88,69 @@ app.get('/', async (req, res) => {
 app.get('/download/', async (req, res) => {
   const rtik = await RTikDown(rdata.url);
   let id = 'RTik-' + rtik.data.id
-  console.log(`Starting download: \nurl: ${url}\nid: ${id}`)
+  console.log(`Starting download: \nurl: ${rdata.url}\nid: ${id}`)
   res.render('pages/download', { rtik: rtik, url: rdata.url, id: id })
 })
-app.use(rdownRouter);
+app.get('/down/', async (req, res) => {
+  let url = req.query.url;
+  let type = req.query.type;
+  let id = req.query.id
+  const rtik = await RTikDown(url);
+  if (type == "mp4") {
+    const path = process.cwd() + `/temp/media/${type}/${id}.mp4`;
+    const requ = https.get(rtik.data.play, (response) => {
+      const file = fs.createWriteStream(path);
+      response.pipe(file);
+      file.on("error", function(err) {
+        console.log("err", err);
+      });
+      file.on("finish", function() {
+        file.close();
+        res.status(200)
+        res.redirect(`/rdown/mp4/${id}.mp4`);
+      });
+    });
+    requ.on("err", (error) => {
+      console.log("error", error);
+    });
+  } else if (type == "mp3") {
+    const path = process.cwd() + `/temp/media/${type}/${id}.mp3`;
+    const requ = https.get(rtik.data.music, (response) => {
+      const file = fs.createWriteStream(path);
+      response.pipe(file);
+      file.on("error", function(err) {
+        console.log("err", err);
+      });
+      file.on("finish", function() {
+        file.close();
+        res.status(200)
+        res.redirect(`/rdown/mp3/${id}.mp3`);
+      });
+    });
+    requ.on("err", (error) => {
+      console.log("error", error);
+    });
+  }
+})
+app.get('/rdown/:type/:id', (req, res) => {
+  let type = req.params.type;
+  let id = req.params.id;
+  let path = `./temp/media/${type}`;
+  try {
+    fs.readdirSync(path).forEach(v => {
+      if (v == `${id}`) {
+        try {
+          res.download(`${path}/${id}`, { root: __dirname });
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    });
+  } catch (err) {
+    console.log(err);
+  }
+})
+
 app.get('*', async (req, res) => {
     res.redirect('/');
 });
