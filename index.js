@@ -84,26 +84,39 @@ const tasktemp = cron.schedule(
 taskmidnight.start()
 tasktemp.start()
 
-passport.serializeUser((user, done) => done(null, user));
-passport.deserializeUser((obj, done) => done(null, obj));
+//passport.serializeUser((user, done) => done(null, user));
+//passport.deserializeUser((obj, done) => done(null, obj));
 
+app.configure(function() {
+  app.use(express.favicon());
+  app.use(express.logger('dev'));
+  // The following two middlwares are NOT necessary because bodyParser includes them.
+  // app.use(express.json());
+  // app.use(express.urlencoded());
+  app.use(express.methodOverride());
 
-app.use(session({
+  app.use(express.cookieParser()); // read cookies (needed for auth)
+  app.use(express.bodyParser()); // get information from html forms
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: true }));
+
+  // required for passport
+  app.use(session({
   secret: 'rtikdown-project',
   resave: true,
   saveUninitialized: true,
   store: new MemoryStore({ checkPeriod: 86400000 }),
-}));
+  }));
+  app.use(passport.initialize());
+  app.use(passport.session()); // persistent login sessions
+  app.use(flash()); // use connect-flash for flash messages stored in session
 
-app.use(passport.initialize());
-app.use(passport.session());
+  app.use(app.router);
+  app.use(require('stylus').middleware(path.join(__dirname, 'public')));
+});
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(require('cookie-parser')());
-
-app.set('json spaces', 4);
-app.use(express.json());
+//app.set('json spaces', 4);
+//app.use(express.json());
 
 app.set('views', __dirname + '/public');
 app.set('view engine', 'ejs');
