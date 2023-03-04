@@ -84,13 +84,6 @@ const tasktemp = cron.schedule(
 taskmidnight.start()
 tasktemp.start()
 
-app.set('json spaces', 4);
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.set('views', __dirname + '/public');
-app.set('view engine', 'ejs');
-app.use(express.static('public'));
-
 passport.serializeUser((user, done) => done(null, user));
 passport.deserializeUser((obj, done) => done(null, obj));
 
@@ -107,6 +100,14 @@ app.use(passport.session());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(require('cookie-parser')());
+
+app.set('json spaces', 4);
+app.use(express.json());
+
+app.set('views', __dirname + '/public');
+app.set('view engine', 'ejs');
+app.use(express.static('public'));
 
 
 app.get('/', async (req, res) => {
