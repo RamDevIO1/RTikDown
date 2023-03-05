@@ -98,17 +98,17 @@ io.on('connection', (socket) => {
   })
 });
 
-app.get('/download/', async (req, res) => {
-  let url = req.query.url;
+app.post('/download', async (req, res) => {
+  let url = req.body.url;
   const rtik = await RTikDown(url)
   let id = 'RTik-'
   console.log(`Starting download: \nURL: ${url}`)
   res.render('pages/download', { rtik: rtik, url: url, id: id })
 })
 
-app.get('/down/', async (req, res) => {
-  let url = req.query.url;
-  let type = req.query.type;
+app.post('/down', async (req, res) => {
+  let url = req.body.url;
+  let type = req.body.type;
   const rtik = await RTikDown(url)
   let id = 'RTik-' + rtik.data.id
   if (type == "mp4") {

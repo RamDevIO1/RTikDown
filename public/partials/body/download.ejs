@@ -25,13 +25,13 @@
       <h5 class="card-title text-break"><%= rtik.data.title %></h5>
       <p class="card-text ct"><%= rtik.data.author.nickname %> (<%= rtik.data.author.unique_id %>)</p>
       <hr class="dropdown-divider">
-      <form action="/down/" method="GET">
+      <form action="/down" method="POST">
         <input type="url" name="url" value="<%= url %>" hidden>
         <input type="text" name="type" value="mp4" hidden>
         <input type="text" name="id" value="<%= id %>" hidden>
         <button class="button" type="submit"><i class="bi bi-download"></i><span class="ms-2">Download Video (MP4)</span></button>
       </form>
-      <form action="/down/" method="GET">
+      <form action="/down" method="POST">
         <input type="url" name="url" value="<%= url %>" hidden>
         <input type="text" name="type" value="mp3" hidden>
         <input type="text" name="id" value="<%= id %>" hidden>
