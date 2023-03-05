@@ -23,9 +23,9 @@ instrument(io, {
 let rdata = { url: ''}
 let rtikdata
 
-async function RTikDown(url) {
+function RTikDown(url) {
   return new Promise(async (resolve, reject) => {
-   await axios.get(`https://www.tikwm.com/api/?url=${url}`)
+    axios.get(`https://www.tikwm.com/api/?url=${url}`)
       .then(({ data }) => {
         resolve(data)
       })
@@ -101,16 +101,17 @@ io.on('connection', (socket) => {
 app.post('/download', async (req, res) => {
   let url = req.body.url;
   const rtik = await RTikDown(url)
-  let id = 'RTik-'
+  
+  let id = 'RTik-' + rtik.data.id
   console.log(`Starting download: \nURL: ${url}`)
   res.render('pages/download', { rtik: rtik, url: url, id: id })
 })
 
-app.post('/down', async (req, res) => {
-  let url = req.body.url;
-  let type = req.body.type;
+app.get('/download', async (req, res) => {
+  let url = req.query.url;
+  let type = req.query.type;
+  let id = req.query.id;
   const rtik = await RTikDown(url)
-  let id = 'RTik-' + rtik.data.id
   if (type == "mp4") {
     const path = process.cwd() + `/temp/media/${type}/${id}.mp4`;
     const requ = https.get(rtik.data.play, (response) => {
@@ -122,7 +123,12 @@ app.post('/down', async (req, res) => {
       file.on("finish", function() {
         file.close();
         res.status(200)
-        res.redirect(`/rdown/mp4/${id}.mp4`);
+        try {
+          res.download(`./temp/media/${type}/${id}`, { root: __dirname });
+        } catch (error) {
+          console.error(error);
+        }
+        //res.redirect(`/rdown/mp4/${id}.mp4`);
       });
     });
     requ.on("err", (error) => {
