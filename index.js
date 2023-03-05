@@ -177,6 +177,6 @@ app.get('*', async (req, res) => {
 });
 
 
-server.listen(4560 || process.env.PORT, () => {
+app.listen(4580 || process.env.PORT, () => {
     console.log(`[SYS] RTikDown is Running..!`);
 });
