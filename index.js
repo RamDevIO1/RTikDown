@@ -122,9 +122,9 @@ app.get('/download', async (req, res) => {
       });
       file.on("finish", function() {
         file.close();
-        res.status(200)
+        res.status(200);
         try {
-          res.download(`./temp/media/${type}/${id}`, { root: __dirname });
+          res.download(`./temp/media/${type}/${id}.mp4`, { root: __dirname });
         } catch (error) {
           console.error(error);
         }
@@ -144,8 +144,13 @@ app.get('/download', async (req, res) => {
       });
       file.on("finish", function() {
         file.close();
-        res.status(200)
-        res.redirect(`/rdown/mp3/${id}.mp3`);
+        res.status(200);
+        try {
+          res.download(`./temp/media/${type}/${id}.mp3`, { root: __dirname });
+        } catch (error) {
+          console.error(error);
+        }
+        //res.redirect(`/rdown/mp3/${id}.mp3`);
       });
     });
     requ.on("err", (error) => {
@@ -173,10 +178,9 @@ app.get('/rdown/:type/:id', (req, res) => {
 })
 
 app.get('*', async (req, res) => {
-    res.redirect('/');
+  res.redirect('/');
 });
 
-
-app.listen(4580 || process.env.PORT, () => {
+app.listen(process.env.PORT, () => {
     console.log(`[SYS] RTikDown is Running..!`);
 });
