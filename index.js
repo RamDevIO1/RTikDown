@@ -6,8 +6,10 @@ const axios = require('axios');
 const cron = require('node-cron');
 const bodyParser  = require("body-parser");
 const { instrument } = require("@socket.io/admin-ui");
+const cors = require('cors');
 
 const app = express();
+app.use(cors())
 
 function RTikDown(url) {
   return new Promise(async (resolve, reject) => {
@@ -20,7 +22,6 @@ function RTikDown(url) {
       })
   })
 }
-
 
 const tasktemp = cron.schedule(
 	"*/60 * * * *", // 60 minutes per delete
@@ -65,6 +66,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', async (req, res) => {
+  res.status(200);
   res.render('pages/index');
 });
 
@@ -74,6 +76,7 @@ app.post('/download', async (req, res) => {
   
   let id = 'RTik-' + rtik.data.id
   console.log(`Starting download: \nURL: ${url}`)
+  res.status(200);
   res.render('pages/download', { rtik: rtik, url: url, id: id })
 })
 
