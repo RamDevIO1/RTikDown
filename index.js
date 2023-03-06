@@ -1,7 +1,6 @@
 const express = require('express');
 const fs = require('fs');
 const ejs = require('ejs');
-const http = require('http');
 const https = require("https");
 const axios = require('axios');
 const cron = require('node-cron');
@@ -9,19 +8,6 @@ const bodyParser  = require("body-parser");
 const { instrument } = require("@socket.io/admin-ui");
 
 const app = express();
-const server = http.createServer(app);
-const { Server } = require("socket.io");
-const io = new Server(server, {
-  cors: {
-    origin: ["https://admin.socket.io"],
-    credentials: true
-  }
-});
-instrument(io, {
-  auth: false,
-});
-let rdata = { url: ''}
-let rtikdata
 
 function RTikDown(url) {
   return new Promise(async (resolve, reject) => {
@@ -35,12 +21,6 @@ function RTikDown(url) {
   })
 }
 
-let taskmidnight = cron.schedule('0 0 0 * * *', () => {
-  console.log('Running a job at 00:00 at Asia/Jakarta timezone');
-}, {
-  scheduled: true,
-  timezone: "Asia/Jakarta"
-});
 
 const tasktemp = cron.schedule(
 	"*/60 * * * *", // 60 minutes per delete
@@ -73,7 +53,6 @@ const tasktemp = cron.schedule(
 	{ scheduled: true, timezone: "Asia/Jakarta" }
 );
 
-taskmidnight.start()
 tasktemp.start()
 
 //app.set('json spaces', 4);
@@ -87,15 +66,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', async (req, res) => {
   res.render('pages/index');
-});
-
-io.on('connection', (socket) => {
-  socket.on('download', async (inpdata) => {
-    rdata.url = inpdata
-    let rtdata = await RTikDown(inpdata)
-    rtikdata = rtdata
-    io.sockets.emit('messageSuccess', inpdata);
-  })
 });
 
 app.post('/download', async (req, res) => {
@@ -156,24 +126,6 @@ app.get('/download', async (req, res) => {
     requ.on("err", (error) => {
       console.log("error", error);
     });
-  }
-})
-app.get('/rdown/:type/:id', (req, res) => {
-  let type = req.params.type;
-  let id = req.params.id;
-  let path = `./temp/media/${type}`;
-  try {
-    fs.readdirSync(path).forEach(v => {
-      if (v == `${id}`) {
-        try {
-          res.download(`${path}/${id}`, { root: __dirname });
-        } catch (error) {
-          console.error(error);
-        }
-      }
-    });
-  } catch (err) {
-    console.log(err);
   }
 })
 
