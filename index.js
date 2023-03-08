@@ -46,7 +46,7 @@ cron.schedule("*/60 * * * *", () => {
 		}
 	},
 	{ scheduled: true, timezone: "Asia/Jakarta" }
-).start();
+);
 
 //tasktemp.start()
 
