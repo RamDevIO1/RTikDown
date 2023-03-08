@@ -1,15 +1,12 @@
-const express = require('express');
-const fs = require('fs');
-const ejs = require('ejs');
-const https = require("https");
-const axios = require('axios');
-const cron = require('node-cron');
+const express     = require('express');
+const fs          = require('fs');
+const ejs         = require('ejs');
+const https       = require("https");
+const axios       = require('axios');
+const cron        = require('node-cron');
 const bodyParser  = require("body-parser");
-const { instrument } = require("@socket.io/admin-ui");
-const cors = require('cors');
-
-const app = express();
-app.use(cors())
+const cors        = require('cors');
+const app         = express();
 
 function RTikDown(url) {
   return new Promise(async (resolve, reject) => {
@@ -23,16 +20,14 @@ function RTikDown(url) {
   })
 }
 
-const tasktemp = cron.schedule(
-	"*/60 * * * *", // 60 minutes per delete
-	() => {
+cron.schedule("*/60 * * * *", () => {
 		try {
 			console.log("Delete Cache Temp");
 			file = fs.readdirSync("./temp/media/mp4").map((a) => "./temp/media/mp4/" + a);
 			file2 = fs.readdirSync("./temp/media/mp3").map((a) => "./temp/media/mp3/" + a);
 			file.map((a) => {
 			  if (a == `./temp/media/mp4/media`) {
-			    return console.log(`media file`)
+			    return
 			  } else {
 			    console.log(a)
 			    fs.unlinkSync(a)
@@ -40,36 +35,31 @@ const tasktemp = cron.schedule(
 			});
 			file2.map((a) => {
 			  if (a == `./temp/media/mp3/media`) {
-			    return console.log(`media file`)
+			    return
 			  } else {
 			    console.log(a)
 			    fs.unlinkSync(a)
 			  }
 			});
-			
 		} catch (e) {
 			console.log(e);
 		}
 	},
 	{ scheduled: true, timezone: "Asia/Jakarta" }
-);
+).start();
 
-tasktemp.start()
-
-//app.set('json spaces', 4);
-//app.use(express.json());
+//tasktemp.start()
 
 app.set('views', __dirname + '/public');
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
+app.use(cors())
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
 app.get('/', async (req, res) => {
   res.status(200);
   res.render('pages/index');
 });
-
 app.post('/download', async (req, res) => {
   let url = req.body.url;
   const rtik = await RTikDown(url)
@@ -79,7 +69,6 @@ app.post('/download', async (req, res) => {
   res.status(200);
   res.render('pages/download', { rtik: rtik, url: url, id: id })
 })
-
 app.get('/download', async (req, res) => {
   let url = req.query.url;
   let type = req.query.type;
@@ -131,11 +120,5 @@ app.get('/download', async (req, res) => {
     });
   }
 })
-
-app.get('*', async (req, res) => {
-  res.redirect('/');
-});
-
-app.listen(process.env.PORT, () => {
-    console.log(`[SYS] RTikDown is Running..!`);
-});
+app.get('*', async (req, res) => { res.redirect('/'); });
+app.listen(process.env.PORT, () => { console.log(`[SYSTEM] RTikDown is Running..!`); });
