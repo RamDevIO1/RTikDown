@@ -4,11 +4,11 @@
   "description": "TikTok Downloader",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "RamDev",
   "license": "ISC",
   "dependencies": {
     "@popperjs/core": "^2.11.6",
@@ -25,5 +25,8 @@
     "node-fetch": "^3.2.6",
     "passport": "^0.6.0",
     "socket.io": "^4.6.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
   }
 }
