@@ -50,6 +50,15 @@ cron.schedule("*/60 * * * *", () => {
 
 //tasktemp.start()
 
+setTimeout(function() {
+  fs.readdirSync("./temp/media/mp4").map((a) => {
+    if (a == `./temp/media/mp4/media`) { return } else {
+      console.log(a)
+      fs.unlinkSync(`./temp/media/mp4/${a}`)
+    }
+  })
+}, 1000 * 60 * 60); //one hour
+
 app.set('views', __dirname + '/public');
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
