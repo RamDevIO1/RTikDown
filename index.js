@@ -52,7 +52,7 @@ cron.schedule("*/60 * * * *", () => {
 
 setInterval(() => {
   fs.readdirSync("./temp/media/mp4").map((a) => {
-    if (a == `./temp/media/mp4/media`) { return console.log("media file") } else {
+    if (a == `media`) { return } else {
       console.log(a)
       fs.unlinkSync(`./temp/media/mp4/${a}`)
     }
