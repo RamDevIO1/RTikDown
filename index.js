@@ -77,6 +77,10 @@ app.post('/download', async (req, res) => {
     app.redirect("/")
   }
   
+  if (!rtik) {
+    app.redirect("/")
+  }
+  
   let id = 'RTik-' + rtik.data.id
   console.log(`Starting download: \nURL: ${url}`)
   res.status(200);
