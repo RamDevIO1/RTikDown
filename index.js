@@ -86,6 +86,11 @@ app.get('/download', async (req, res) => {
   let type = req.query.type;
   let id = req.query.id;
   const rtik = await RTikDown(url)
+  
+  if (rtik.code == -1) {
+    res.redirect("/")
+  } else {
+    
   if (type == "mp4") {
     const path = process.cwd() + `/temp/media/${type}/${id}.mp4`;
     const requ = https.get(rtik.data.play, (response) => {
@@ -130,6 +135,7 @@ app.get('/download', async (req, res) => {
     requ.on("err", (error) => {
       console.log("error", error);
     });
+  }
   }
 })
 app.get('*', async (req, res) => { res.redirect('/'); });
