@@ -71,11 +71,7 @@ app.get('/', async (req, res) => {
 });
 app.post('/download', async (req, res) => {
   let url = req.body.url;
-  try {
-    const rtik = await RTikDown(url)
-  } catch (e) {
-    app.redirect("/")
-  }
+  const rtik = await RTikDown(url)
   if (rtik.code == -1) {
     app.redirect("/")
   } else {
