@@ -91,9 +91,7 @@ app.post('/download', async (req, res) => {
       res.status(200);
       res.render('pages/download', { rtik: rtik, url: url, id: id })
     }
-  }).catch(function(error) {
-    console.error(error);
-  });
+  }).catch(function(error) { });
 })
 app.get('/download', async (req, res) => {
   let url = req.query.url;
@@ -161,9 +159,7 @@ app.get('/download', async (req, res) => {
         });
       }
     }
-  }).catch(function(error) {
-    console.error(error);
-  });
+  }).catch(function(error) { });
 })
 app.get('*', async (req, res) => { res.redirect('/'); });
 app.listen(process.env.PORT, () => { console.log(`[SYSTEM] RTikDown is Running..!`); });
