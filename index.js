@@ -76,15 +76,14 @@ app.post('/download', async (req, res) => {
   } catch (e) {
     app.redirect("/")
   }
-  
-  if (!rtik) {
+  if (rtik.code == -1) {
     app.redirect("/")
+  } else {
+    let id = 'RTik-' + rtik.data.id
+    console.log(`Starting download: \nURL: ${url}`)
+    res.status(200);
+    res.render('pages/download', { rtik: rtik, url: url, id: id })
   }
-  
-  let id = 'RTik-' + rtik.data.id
-  console.log(`Starting download: \nURL: ${url}`)
-  res.status(200);
-  res.render('pages/download', { rtik: rtik, url: url, id: id })
 })
 app.get('/download', async (req, res) => {
   let url = req.query.url;
