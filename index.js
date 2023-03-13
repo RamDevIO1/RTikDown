@@ -20,7 +20,8 @@ function RTikDown(url) {
   })
 }
 
-cron.schedule("*/60 * * * *", () => {
+/*
+cron.schedule("/60 * * * *", () => {
 		try {
 			console.log("Delete Cache Temp");
 			file = fs.readdirSync("./temp/media/mp4").map((a) => "./temp/media/mp4/" + a);
@@ -46,18 +47,19 @@ cron.schedule("*/60 * * * *", () => {
 		}
 	},
 	{ scheduled: false, timezone: "Asia/Jakarta" }
-);
+);*/
 
 //tasktemp.start()
 
 setInterval(() => {
+  console.log("1 jam ....")
   fs.readdirSync("./temp/media/mp4").map((a) => {
     if (a == `media`) { return } else {
       console.log(a)
       fs.unlinkSync(`./temp/media/mp4/${a}`)
     }
   })
-}, 1000 * 60 * 60); //one hour
+}, 1000 * 60 * 60); 
 
 app.set('views', __dirname + '/public');
 app.set('view engine', 'ejs');
