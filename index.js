@@ -20,37 +20,6 @@ function RTikDown(url) {
   })
 }
 
-/*
-cron.schedule("/60 * * * *", () => {
-		try {
-			console.log("Delete Cache Temp");
-			file = fs.readdirSync("./temp/media/mp4").map((a) => "./temp/media/mp4/" + a);
-			file2 = fs.readdirSync("./temp/media/mp3").map((a) => "./temp/media/mp3/" + a);
-			file.map((a) => {
-			  if (a == `./temp/media/mp4/media`) {
-			    return
-			  } else {
-			    console.log(a)
-			    fs.unlinkSync(a)
-			  }
-			});
-			file2.map((a) => {
-			  if (a == `./temp/media/mp3/media`) {
-			    return
-			  } else {
-			    console.log(a)
-			    fs.unlinkSync(a)
-			  }
-			});
-		} catch (e) {
-			console.log(e);
-		}
-	},
-	{ scheduled: false, timezone: "Asia/Jakarta" }
-);*/
-
-//tasktemp.start()
-
 setInterval(() => {
   console.log("1 jam ....")
   fs.readdirSync("./temp/media/mp4").map((a) => {
