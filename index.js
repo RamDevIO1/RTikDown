@@ -7,6 +7,7 @@ const cron        = require('node-cron');
 const bodyParser  = require("body-parser");
 const cors        = require('cors');
 const app         = express();
+const maintenance = true;
 
 function RTikDown(url) {
   return new Promise(async (resolve, reject) => {
@@ -37,8 +38,12 @@ app.use(cors())
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.get('/', async (req, res) => {
-  res.status(200);
-  res.render('pages/index');
+  if (maintenance) {
+    res.render('pages/maintenance');
+  }else {
+    res.status(200);
+    res.render('pages/index');
+  }
 });
 app.post('/download', async (req, res) => {
   let url = req.body.url;
