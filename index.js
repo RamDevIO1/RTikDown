@@ -7,7 +7,7 @@ const cron        = require('node-cron');
 const bodyParser  = require("body-parser");
 const cors        = require('cors');
 const app         = express();
-const maintenance = true;
+const maintenance = false;
 
 function RTikDown(url) {
   return new Promise(async (resolve, reject) => {
@@ -47,7 +47,16 @@ app.get('/', async (req, res) => {
 });
 app.post('/download', async (req, res) => {
   let url = req.body.url;
-  
+  let rtik = await RTikDown(url)
+  if (rtik.code == -1) {
+    res.redirect("/")
+  } else {
+    let id = 'RTik-' + rtik.data.id
+    console.log(`Starting download: \nURL: ${url}`)
+    res.status(200);
+    res.render('pages/download', { rtik: rtik, url: url, id: id })
+  }
+  /*
   axios.request({
     method: 'GET',
     url: 'https://tiktok-video-no-watermark2.p.rapidapi.com/',
@@ -67,15 +76,65 @@ app.post('/download', async (req, res) => {
       res.status(200);
       res.render('pages/download', { rtik: rtik, url: url, id: id })
     }
-  }).catch(function(error) { });
+  }).catch(function(error) { });*/
 })
 app.get('/download', async (req, res) => {
   let url = req.query.url;
   let type = req.query.type;
   let id = req.query.id;
-  //const rtik = await RTikDown(url)
+  const rtik = await RTikDown(url)
   
-  axios.request({
+  if (rtik.code == -1) {
+    res.redirect("/")
+  } else {
+    if (type == "mp4") {
+      const path = process.cwd() + `/temp/media/${type}/${id}.mp4`;
+      const requ = https.get(rtik.data.play, (response) => {
+        const file = fs.createWriteStream(path);
+        response.pipe(file);
+        file.on("error", function(err) {
+          console.log("err", err);
+        });
+        file.on("finish", function() {
+          file.close();
+          res.status(200);
+          try {
+            res.download(`./temp/media/${type}/${id}.mp4`, { root: __dirname });
+          } catch (error) {
+            console.error(error);
+          }
+          //res.redirect(`/rdown/mp4/${id}.mp4`);
+        });
+      });
+      requ.on("err", (error) => {
+        console.log("error", error);
+      });
+    } else if (type == "mp3") {
+      const path = process.cwd() + `/temp/media/${type}/${id}.mp3`;
+      const requ = https.get(rtik.data.music, (response) => {
+        const file = fs.createWriteStream(path);
+        response.pipe(file);
+        file.on("error", function(err) {
+          console.log("err", err);
+        });
+        file.on("finish", function() {
+          file.close();
+          res.status(200);
+          try {
+            res.download(`./temp/media/${type}/${id}.mp3`, { root: __dirname });
+          } catch (error) {
+            console.error(error);
+          }
+          //res.redirect(`/rdown/mp3/${id}.mp3`);
+        });
+      });
+      requ.on("err", (error) => {
+        console.log("error", error);
+      });
+    }
+  }
+  
+  /*axios.request({
     method: 'GET',
     url: 'https://tiktok-video-no-watermark2.p.rapidapi.com/',
     params: { url: url, hd: '0' },
@@ -86,56 +145,8 @@ app.get('/download', async (req, res) => {
   }).then(function(response) {
     let rtik = response.data
     
-    if (rtik.code == -1) {
-      res.redirect("/")
-    } else {
-      if (type == "mp4") {
-        const path = process.cwd() + `/temp/media/${type}/${id}.mp4`;
-        const requ = https.get(rtik.data.play, (response) => {
-          const file = fs.createWriteStream(path);
-          response.pipe(file);
-          file.on("error", function(err) {
-            console.log("err", err);
-          });
-          file.on("finish", function() {
-            file.close();
-            res.status(200);
-            try {
-              res.download(`./temp/media/${type}/${id}.mp4`, { root: __dirname });
-            } catch (error) {
-              console.error(error);
-            }
-            //res.redirect(`/rdown/mp4/${id}.mp4`);
-          });
-        });
-        requ.on("err", (error) => {
-          console.log("error", error);
-        });
-      } else if (type == "mp3") {
-        const path = process.cwd() + `/temp/media/${type}/${id}.mp3`;
-        const requ = https.get(rtik.data.music, (response) => {
-          const file = fs.createWriteStream(path);
-          response.pipe(file);
-          file.on("error", function(err) {
-            console.log("err", err);
-          });
-          file.on("finish", function() {
-            file.close();
-            res.status(200);
-            try {
-              res.download(`./temp/media/${type}/${id}.mp3`, { root: __dirname });
-            } catch (error) {
-              console.error(error);
-            }
-            //res.redirect(`/rdown/mp3/${id}.mp3`);
-          });
-        });
-        requ.on("err", (error) => {
-          console.log("error", error);
-        });
-      }
-    }
-  }).catch(function(error) { });
+    
+  }).catch(function(error) { });*/
 })
 app.get('*', async (req, res) => { res.redirect('/'); });
 app.listen(process.env.PORT, () => { console.log(`[SYSTEM] RTikDown is Running..!`); });
